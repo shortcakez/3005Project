@@ -170,6 +170,7 @@ while memType != 0:
 
         #logging out to login menu
         if select == 0:
+            loggedin = False
             break
 
         #allocating what function to call
