@@ -22,7 +22,7 @@ connection = psycopg2.connect(
 cursor = connection.cursor()
 
 #FUNCTIONS
-#decide what to display depending on who logs in
+#Logging in user 
 def login():
     print("LOGIN")
     print("select one of the following options (# only):\n\t 1. Gym member\n\t 2. Trainer\n\t 3. Admin\n\t 4. New gym member\n\t 5. Quit")
@@ -112,6 +112,7 @@ def menu(memType):
             return "0"
 
         return select
+    
     else: #display admin options
         #main options
         print("\t 1. Manage Room Bookings")
@@ -157,12 +158,12 @@ def userRegistration():
 #ADMIN FUNCTIONS
 
 
-#APPLICATION SET UP
-#login user
+
 memType = 1
 select = ""
 
 while memType != 0:
+    #login user
     memType = login()
     while select != "0":
         #displaying menu options and getting user selection
@@ -224,4 +225,5 @@ while memType != 0:
 
         #commiting changes to postgres
         connection.commit()
-    
+
+print("Have a nice day :)")  
