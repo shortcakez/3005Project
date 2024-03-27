@@ -148,6 +148,7 @@ def userRegistration():
 
     values = "VALUES ('{}', '{}', '{}', '{}')".format(fname, lname, weight, height, age)
     cursor.execute("INSERT INTO students (fname, lname, weight, height, age) " + values)
+    connection.commit()
     print("Registration complete. Welcome to the gym!")
 
 #TRAINER FUNCTIONS
@@ -219,4 +220,7 @@ while memType != 0:
             elif select == "4":
                 #process billing and payment
                 print("")
+
+        #commiting changes to postgres
+        connection.commit()
     
