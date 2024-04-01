@@ -256,6 +256,10 @@ def displayHealthStats():
     for data in dataset:
         print(" {}\t\t {}\t\t {}".format(data[0], data[1], data[2]))
 
+#scheduling a personal training session
+        
+#schedule a group fitness class
+
 #TRAINER FUNCTIONS
 
 
