@@ -3,6 +3,7 @@ import psycopg2
 
 #global variables
 loggedin = False
+id = ""
 
 #getting postgres connection info from user
 db = input("Enter database name: ")
@@ -43,8 +44,9 @@ def login():
         #getting user id
         id = input("Enter Id: ")
         loggedin = match(memType, id)
-        if loggedin == False:
+        while loggedin == False:
             print("id number invalid, try again")
+            loggedin = match(memType, id)
 
     return int(memType)
 
@@ -152,6 +154,108 @@ def userRegistration():
     connection.commit()
     print("Registration complete. Welcome to the gym!")
 
+#updating member's personal infomation
+def updateInfo():
+    #options
+    print("\t1. First name")
+    print("\t2. Last name")
+    option = validate(1, 2)
+
+    if option == "1":
+        fname = input("Enter first name: ")
+        set = "fname = " + fname
+    else:
+        lname = input("Enter last name: ")
+        set =  "lname = " + lname
+
+    cursor.execute("UPDATE Members SET %s WHERE member_id = %s", (set, id))
+    print("Successfully updated your personal information!")
+
+#update member's fitness goals
+def updateGoals():
+    displayGoals(False)
+    #options
+    print("\t1. Update a goal")
+    print("\t2. Add a goal")
+    print("\t3. Delete a goal")
+    option = validate(1, 3)
+
+    if option == "1":
+        #options
+        print("\t1. Update goal statement")
+        print("\t2. Change goal to achieved")
+        option = validate(1, 3)
+        goal_id = input("Enter goal id: ")
+
+        if option == 1:
+            goal = input("Enter goal statement: ")
+            cursor.execute("FROM Members SET goal = %s WHERE member_id = %s, goal_id = %s", (goal, id, goal_id))
+        else:
+            cursor.execute("FROM Members SET acheived = true WHERE member_id = %s, goal_id = %s", (id, goal_id))
+    elif option == "2":
+        goal = input("Enter goal statement: ")
+        goal_id = input("Enter goal_id: ") #DON'T KNOW HOW WE GONNA DO THIS...
+        values = "VALUES ('{}', '{}', '{}', '{}')".format(goal_id, id, goal, False)
+        cursor.execute("INSERT INTO Fitness_goals (goal_id, member_id, goal, achieved) " + values)
+    else:
+        goal_id = input("Enter goal id: ")
+        cursor.execute("DELETE FROM Fitness_goals WHERE member_id = %s, goal_id = %s", ( id, goal_id))
+
+#update member's health metrics
+def updateHealth():
+    #options
+    print("\t1. Age")
+    print("\t2. Height")
+    print("\t3. Weight")
+    option = validate(1, 3)
+
+    if option == "1":
+        age = input("Enter age: ")
+        set = "age = " + age
+    elif option == "2":
+        height = input("Enter height: ")
+        set = "height = " + height
+    else:
+        weight = input("Enter weight: ")
+        set = "weight = " + weight
+
+    cursor.execute("UPDATE Members SET %s WHERE member_id = %s", (set, id))
+    print("Successfully updated your health metrics!")
+
+#display member's exercise routine
+def displayRoutine():
+    cursor.execute("SELECT step, exercise, reps FROM Routine WHERE member_id = " + id)
+    dataset = cursor.fetchall()
+
+    print("\nExercise Routine:")
+    print("Step\tExercise\tReps")
+    for data in dataset:
+        print(" {}\t\t {}\t\t {}".format(data[0], data[1], data[2]))
+
+#display member's fitness goals
+def displayGoals(achieve):
+    cursor.execute("SELECT goal_id, goal FROM Fitness_goals WHERE achieved = " + achieve + ", member_id = " + id)
+    dataset = cursor.fetchall()
+
+    if achieve == True:
+        print("\nFitness Achievements:")
+    else:
+        print("\nFitness Goals")
+
+    print("goal_id\tgoal")
+    for data in dataset:
+        print(" {}\t\t {}".format(data[0], data[1]))
+
+#display member's health statistics
+def displayHealthStats():
+    cursor.execute("SELECT age, weight, height FROM Members WHERE member_id = " + id)
+    dataset = cursor.fetchall()
+
+    print("\nHealth Statistics:")
+    print("Age\tWeight\tHeight")
+    for data in dataset:
+        print(" {}\t\t {}\t\t {}".format(data[0], data[1], data[2]))
+
 #TRAINER FUNCTIONS
 
 
@@ -179,22 +283,22 @@ while memType != 0:
         if memType == 1: 
             if selection == "update1":
                 #update personal info
-                print("")
+                updateInfo()
             elif selection == "update2":
                 #update fitness goals
-                print("")
+                updateGoals()
             elif selection == "update3":
                 #update health metrics
-                print("")
+                updateHealth()
             elif selection == "display1":
                 #display exercise routines
-                print("")
+                displayRoutine()
             elif selection == "display2":
                 #display fitness achievements
-                print("")
+                displayGoals(True)
             elif selection == "display3":
                 #display health stats
-                print("")
+                displayHealthStats()
             elif selection == "schedule1":
                 #schedule personal training session
                 print("")
