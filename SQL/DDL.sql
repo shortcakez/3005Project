@@ -1,18 +1,20 @@
+DROP TABLE IF EXISTS Members, Fitness_goals, Routine, Trainers, Rooms, Sessions, Admin_staff, Equipment_Maintenence;
+
 CREATE TABLE Members (
     member_id SERIAL PRIMARY KEY,
     fname VARCHAR(30) NOT NULL,
     lname VARCHAR(30) NOT NULL,
     age SMALLINT NOT NULL,
-    weight NUMERIC(3,1),
-    height NUMERIC(3,1),
+    weight FLOAT,
+    height FLOAT,
     last_payment_date DATE,
     next_payment_date DATE,
-    next_payment_amnt NUMERIC(3,2)
+    next_payment_amnt FLOAT
 );
 
 CREATE TABLE Fitness_goals (
     goal_id INT,
-    member_id INT,
+    member_id INT, 
     goal VARCHAR(255) NOT NULL,
     achieved BOOLEAN,
     PRIMARY KEY (member_id, goal_id),
