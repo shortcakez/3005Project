@@ -52,20 +52,20 @@ def login():
 def match(memType, id):
     #determine which table to search
     if memType == 1:
-        cursor.execute("SELECT id, password FROM members")
+        cursor.execute("SELECT id, password FROM Members")
     elif memType == 2:
-        cursor.execute("SELECT id, password FROM trainers")
+        cursor.execute("SELECT id, password FROM Trainers")
     else:
-        cursor.execute("SELECT id, password FROM admins")
+        cursor.execute("SELECT id, password FROM Admin_staff")
     dataset = cursor.fetchall()
 
-    matched = False
     for data in dataset:
         if id == data[0]:
-            matched = True
-            break
+            #match
+            return True
     
-    return matched
+    #no match
+    return False
 
 #display menu and get user input for what they want to do
 def menu(memType):
@@ -160,66 +160,69 @@ def userRegistration():
 
 
 memType = 1
-select = ""
+selection = ""
 
 while memType != 0:
     #login user
     memType = login()
-    while select != "0":
+    while loggedin == True:
         #displaying menu options and getting user selection
-        select = menu(memType)
+        selection = menu(memType)
 
         #logging out to login menu
-        if select == 0:
+        if selection == "0":
             loggedin = False
             break
 
         #allocating what function to call
-        if memType == 1: #calling member functions
-            if select == "update1":
+        #CALLING MEMBER FUNCTIONS
+        if memType == 1: 
+            if selection == "update1":
                 #update personal info
                 print("")
-            elif select == "update2":
+            elif selection == "update2":
                 #update fitness goals
                 print("")
-            elif select == "update3":
+            elif selection == "update3":
                 #update health metrics
                 print("")
-            elif select == "display1":
+            elif selection == "display1":
                 #display exercise routines
                 print("")
-            elif select == "display2":
+            elif selection == "display2":
                 #display fitness achievements
                 print("")
-            elif select == "display3":
+            elif selection == "display3":
                 #display health stats
                 print("")
-            elif select == "schedule1":
+            elif selection == "schedule1":
                 #schedule personal training session
                 print("")
-            elif select == "schedule2":
+            elif selection == "schedule2":
                 #schedule group fitness class
                 print("")
 
-        elif memType == 2: #calling trainer functions
-            if select == "1":
+        #CALLING TRAINER FUNCTIONS
+        elif memType == 2:
+            if selection == "1":
                 #schedule management
                 print("")
-            elif select == "2":
+            elif selection == "2":
                 #view member profile
                 print("")
 
-        elif memType == 3: #calling admin functions
-            if select == "1":
+        #CALLING ADMIN FUNCTIONS
+        elif memType == 3: 
+            if selection == "1":
                 #manage room booking
                 print("")
-            elif select == "2":
+            elif selection == "2":
                 #monitor eqipement
                 print("")
-            elif select == "3":
+            elif selection == "3":
                 #update class schedule
                 print("") 
-            elif select == "4":
+            elif selection == "4":
                 #process billing and payment
                 print("")
 
