@@ -1,20 +1,22 @@
 #imports
 import psycopg2
+import datetime
 
 #global variables
 loggedin = False
 id = ""
 
 #getting postgres connection info from user
+'''
 db = input("Enter database name: ")
-username = input("Enter user name: ")
 pswd = input("Enter password: ")
+'''
 
 #making connection
 connection = psycopg2.connect(
-        dbname=db,
-        user=username,
-        password=pswd,
+        dbname="project",
+        user="postgres",
+        password="heyyadora",
         host="localhost",
         port="5432"
     )
@@ -25,6 +27,9 @@ cursor = connection.cursor()
 #FUNCTIONS
 #Logging in user 
 def login():
+    global loggedin
+    global id
+
     print("LOGIN")
     print("select one of the following options (# only):\n\t 1. Gym member\n\t 2. Trainer\n\t 3. Admin\n\t 4. New gym member\n\t 5. Quit")
 
@@ -46,6 +51,7 @@ def login():
         loggedin = match(memType, id)
         while loggedin == False:
             print("id number invalid, try again")
+            id = input("Enter Id: ")
             loggedin = match(memType, id)
 
     return int(memType)
@@ -53,17 +59,18 @@ def login():
 #checking if id and passwords match
 def match(memType, id):
     #determine which table to search
-    if memType == 1:
-        cursor.execute("SELECT id, password FROM Members")
-    elif memType == 2:
-        cursor.execute("SELECT id, password FROM Trainers")
+    if memType == "1":
+        cursor.execute("SELECT member_id FROM Members")
+    elif memType == "2":
+        cursor.execute("SELECT trainer_id FROM Trainers")
     else:
-        cursor.execute("SELECT id, password FROM Admin_staff")
+        cursor.execute("SELECT staff_id FROM Admin_staff")
     dataset = cursor.fetchall()
 
     for data in dataset:
-        if id == data[0]:
+        if int(id) == data[0]:
             #match
+            print("Logged in! Welcome!")
             return True
     
     #no match
@@ -134,8 +141,8 @@ def menu(memType):
 def validate(min, max):
     select = input(">> ")
     while int(select) < min or int(select) > max:
-            print("invalid option, try again")
-            select = input(">> ")
+        print("invalid option, try again")
+        select = input(">> ")
     return select
     
 #MEMEBER FUNCTIONS
@@ -148,14 +155,16 @@ def userRegistration():
     age = input("\t Enter your age: ")
     weight = input("\t Enter your weight (lb): ")
     height = input("\t Enter your height (cm): ")
+    date = datetime.datetime.now()
 
-    values = "VALUES ('{}', '{}', '{}', '{}')".format(fname, lname, weight, height, age)
-    cursor.execute("INSERT INTO students (fname, lname, weight, height, age) " + values)
+    values = "VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(fname, lname, weight, height, age, date, 20)
+    cursor.execute("INSERT INTO Members (fname, lname, weight, height, age, next_payment_date, next_payment_amnt) " + values)
     connection.commit()
     print("Registration complete. Welcome to the gym!")
 
 #updating member's personal infomation
 def updateInfo():
+    global id
     #options
     print("\t1. First name")
     print("\t2. Last name")
@@ -163,46 +172,54 @@ def updateInfo():
 
     if option == "1":
         fname = input("Enter first name: ")
-        set = "fname = " + fname
+        cursor.execute("UPDATE Members SET fname = %s WHERE member_id = %s", (fname, id))
     else:
         lname = input("Enter last name: ")
-        set =  "lname = " + lname
+        cursor.execute("UPDATE Members SET lname = %s WHERE member_id = %s", (lname, id))
 
-    cursor.execute("UPDATE Members SET %s WHERE member_id = %s", (set, id))
     print("Successfully updated your personal information!")
 
 #update member's fitness goals
 def updateGoals():
-    displayGoals(False)
+    global id
+
+    displayGoals("false")
     #options
     print("\t1. Update a goal")
     print("\t2. Add a goal")
     print("\t3. Delete a goal")
     option = validate(1, 3)
 
-    if option == "1":
+    if option == "1": #update goals
         #options
         print("\t1. Update goal statement")
         print("\t2. Change goal to achieved")
         option = validate(1, 3)
         goal_id = input("Enter goal id: ")
 
-        if option == 1:
+        if option == "1":
             goal = input("Enter goal statement: ")
-            cursor.execute("FROM Members SET goal = %s WHERE member_id = %s, goal_id = %s", (goal, id, goal_id))
+            cursor.execute("UPDATE Fitness_goals SET goal = %s WHERE member_id = %s and goal_id = %s", (goal, id, goal_id))
+            print("Successfully updated your goal statement!")
         else:
-            cursor.execute("FROM Members SET acheived = true WHERE member_id = %s, goal_id = %s", (id, goal_id))
-    elif option == "2":
+            cursor.execute("UPDATE Fitness_goals SET achieved = true WHERE member_id = %s and goal_id = %s", (id, goal_id))
+            print("Successfully changed goal to achieved!")
+    
+    elif option == "2": #adding a goal
         goal = input("Enter goal statement: ")
         goal_id = input("Enter goal_id: ") #DON'T KNOW HOW WE GONNA DO THIS...
         values = "VALUES ('{}', '{}', '{}', '{}')".format(goal_id, id, goal, False)
         cursor.execute("INSERT INTO Fitness_goals (goal_id, member_id, goal, achieved) " + values)
-    else:
+        print("Successfully added new goal!")
+    else: #deleting a goal
         goal_id = input("Enter goal id: ")
-        cursor.execute("DELETE FROM Fitness_goals WHERE member_id = %s, goal_id = %s", ( id, goal_id))
+        cursor.execute("DELETE FROM Fitness_goals WHERE member_id = %s and goal_id = %s", ( id, goal_id))
+        print("Successfully deleted goal!")
 
 #update member's health metrics
 def updateHealth():
+    global id
+
     #options
     print("\t1. Age")
     print("\t2. Height")
@@ -211,54 +228,64 @@ def updateHealth():
 
     if option == "1":
         age = input("Enter age: ")
-        set = "age = " + age
+        cursor.execute("UPDATE Members SET age = %s WHERE member_id = %s", (age, id))
     elif option == "2":
         height = input("Enter height: ")
-        set = "height = " + height
+        cursor.execute("UPDATE Members SET height = %s WHERE member_id = %s", (height, id))
     else:
         weight = input("Enter weight: ")
-        set = "weight = " + weight
+        cursor.execute("UPDATE Members SET weight = %s WHERE member_id = %s", (weight, id))
 
-    cursor.execute("UPDATE Members SET %s WHERE member_id = %s", (set, id))
     print("Successfully updated your health metrics!")
 
 #display member's exercise routine
 def displayRoutine():
+    global id
+
     cursor.execute("SELECT step, exercise, reps FROM Routine WHERE member_id = " + id)
     dataset = cursor.fetchall()
 
     print("\nExercise Routine:")
-    print("Step\tExercise\tReps")
+    print("Step\tExercise\t\t\tReps")
     for data in dataset:
-        print(" {}\t\t {}\t\t {}".format(data[0], data[1], data[2]))
+        print(" {}\t {}\t\t {}".format(data[0], data[1], data[2]))
+    print("\n")
 
 #display member's fitness goals
 def displayGoals(achieve):
-    cursor.execute("SELECT goal_id, goal FROM Fitness_goals WHERE achieved = " + achieve + ", member_id = " + id)
+    global id
+
+    cursor.execute("SELECT goal_id, goal FROM Fitness_goals WHERE achieved = " + achieve + " and member_id = " + id)
     dataset = cursor.fetchall()
 
-    if achieve == True:
+    if achieve == "true":
         print("\nFitness Achievements:")
     else:
         print("\nFitness Goals")
 
-    print("goal_id\tgoal")
+    print("goal_id\t  goal")
     for data in dataset:
-        print(" {}\t\t {}".format(data[0], data[1]))
+        print(" {}\t   {}".format(data[0], data[1]))
+    print("\n")
 
 #display member's health statistics
 def displayHealthStats():
+    global id
+
     cursor.execute("SELECT age, weight, height FROM Members WHERE member_id = " + id)
     dataset = cursor.fetchall()
 
     print("\nHealth Statistics:")
-    print("Age\tWeight\tHeight")
+    print("Age\tWeight\t  Height")
     for data in dataset:
-        print(" {}\t\t {}\t\t {}".format(data[0], data[1], data[2]))
+        print(" {}\t {}\t   {}".format(data[0], data[1], data[2]))
+    print("\n")
 
 #scheduling a personal training session
+
         
 #schedule a group fitness class
+
 
 #TRAINER FUNCTIONS
 
@@ -267,74 +294,80 @@ def displayHealthStats():
 
 
 
-memType = 1
-selection = ""
+#MAIN
+def main():
+    memType = 1
+    selection = ""
+    global loggedin
 
-while memType != 0:
-    #login user
-    memType = login()
-    while loggedin == True:
-        #displaying menu options and getting user selection
-        selection = menu(memType)
+    while memType != 0:
+        #login user
+        memType = login()
+        while memType != 0:
+            #displaying menu options and getting user selection
+            selection = menu(memType)
 
-        #logging out to login menu
-        if selection == "0":
-            loggedin = False
-            break
+            #logging out to login menu
+            if selection == "0":
+                loggedin = False
+                break
 
-        #allocating what function to call
-        #CALLING MEMBER FUNCTIONS
-        if memType == 1: 
-            if selection == "update1":
-                #update personal info
-                updateInfo()
-            elif selection == "update2":
-                #update fitness goals
-                updateGoals()
-            elif selection == "update3":
-                #update health metrics
-                updateHealth()
-            elif selection == "display1":
-                #display exercise routines
-                displayRoutine()
-            elif selection == "display2":
-                #display fitness achievements
-                displayGoals(True)
-            elif selection == "display3":
-                #display health stats
-                displayHealthStats()
-            elif selection == "schedule1":
-                #schedule personal training session
-                print("")
-            elif selection == "schedule2":
-                #schedule group fitness class
-                print("")
+            #allocating what function to call
+            #CALLING MEMBER FUNCTIONS
+            if memType == 1: 
+                if selection == "update1":
+                    #update personal info
+                    updateInfo()
+                elif selection == "update2":
+                    #update fitness goals
+                    updateGoals()
+                elif selection == "update3":
+                    #update health metrics
+                    updateHealth()
+                elif selection == "display1":
+                    #display exercise routines
+                    displayRoutine()
+                elif selection == "display2":
+                    #display fitness achievements
+                    displayGoals("true")
+                elif selection == "display3":
+                    #display health stats
+                    displayHealthStats()
+                elif selection == "schedule1":
+                    #schedule personal training session
+                    print("")
+                elif selection == "schedule2":
+                    #schedule group fitness class
+                    print("")
 
-        #CALLING TRAINER FUNCTIONS
-        elif memType == 2:
-            if selection == "1":
-                #schedule management
-                print("")
-            elif selection == "2":
-                #view member profile
-                print("")
+            #CALLING TRAINER FUNCTIONS
+            elif memType == 2:
+                if selection == "1":
+                    #schedule management
+                    print("")
+                elif selection == "2":
+                    #view member profile
+                    print("")
 
-        #CALLING ADMIN FUNCTIONS
-        elif memType == 3: 
-            if selection == "1":
-                #manage room booking
-                print("")
-            elif selection == "2":
-                #monitor eqipement
-                print("")
-            elif selection == "3":
-                #update class schedule
-                print("") 
-            elif selection == "4":
-                #process billing and payment
-                print("")
+            #CALLING ADMIN FUNCTIONS
+            elif memType == 3: 
+                if selection == "1":
+                    #manage room booking
+                    print("")
+                elif selection == "2":
+                    #monitor eqipement
+                    print("")
+                elif selection == "3":
+                    #update class schedule
+                    print("") 
+                elif selection == "4":
+                    #process billing and payment
+                    print("")
 
-        #commiting changes to postgres
-        connection.commit()
+            #commiting changes to postgres
+            connection.commit()
 
-print("Have a nice day :)")  
+    print("Have a nice day :)")  
+
+if __name__=="__main__":
+    main()
