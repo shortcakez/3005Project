@@ -45,10 +45,14 @@ INSERT INTO Rooms (room_type) VALUES
 ('Weight Room'),
 ('Weight Room'),
 ('Weight Room'),
-('Hot Yoga Facility'),
-('Swimming Pool'),
-('Stretching and Mobility'),
-('Kick-boxing studio');
+('Weight Room'),
+('Weight Room'),
+('Weight Room'),
+('Weight Room'),
+('Weight Room'),
+('Weight Room'),
+('Weight Room'),
+('Weight Room');
 
 INSERT INTO Sessions (trainer_id, room_num, session_time, session_date) VALUES
 (1, 1, '12:30:00', '2024-04-5'),
