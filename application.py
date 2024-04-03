@@ -21,8 +21,10 @@ connection = psycopg2.connect(
         port="5432"
     )
 
+
 #cursor object to run queries
 cursor = connection.cursor()
+connection.autocommit=True
 
 #FUNCTIONS
 #Logging in user 
@@ -145,7 +147,7 @@ def validate(min, max):
         select = input(">> ")
     return select
     
-#MEMEBER FUNCTIONS
+#MEMBER FUNCTIONS
 #add new user
 def userRegistration():
     #get user input
@@ -282,17 +284,85 @@ def displayHealthStats():
     print("\n")
 
 #scheduling a personal training session
+def schedulePT():
 
-        
+    date = input("Enter what date you want to schedule your session (Format: YYYY-MM-DD): ")
+    time = input("Enter what time you want you want to schedule your session. You can only schedule at XX:00 or XX:30 times (Format: HH:MM): ")
+
+    time = "{}:00".format(time)
+
+    date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+    time = datetime.datetime.strptime(time, "%H:%M:%S").time()
+
+    trainer = isTrainerAvailable(date,time)
+    if(trainer == -1):
+        print("No trainer is available at that time, please pick another time")
+        return
+    
+    #We found a trainer 
+
+    room = isRoomAvailable(date,time)
+       
+    if(room == -1):
+        print("No trainer is available at that time, please pick another time")
+        return
+    
+    cursor.execute("INSERT INTO Sessions (trainer_id, room_num, session_time, session_date) VALUES (%s, %s, %s, %s)", (trainer, room, time, date))
+    print(f"Session sucessfully registered at {date}, {time}")
+                
 #schedule a group fitness class
 
 
 #TRAINER FUNCTIONS
+def viewTrainerSchedule(trainer_id):
+    cursor.execute("SELECT * from Sessions WHERE trainer_id = " + str(trainer_id))
+    return cursor.fetchall()
+
+def isTrainerAvailable(date, time) -> int:
+    cursor.execute("SELECT COUNT(*) FROM TRAINERS;")
+    trainer_num = cursor.fetchone()[0] # gets the number of trainers
+
+    for i in range(1,trainer_num+1):
+
+        schedule = viewTrainerSchedule(i)
+        trainer_free = True
+        for row in schedule:
+            if row[3] == time and row[4] == date:
+                trainer_free = False
+                break
+        
+        if trainer_free == False:
+            continue
+
+        return i
+    
+    # if still not returned, then no trainer is available
+    return -1
 
 
 #ADMIN FUNCTIONS
+def viewRoomsSchedule(num):
+    cursor.execute("SELECT * from Sessions WHERE room_num = " + str(num))
+    return cursor.fetchall()
 
+def isRoomAvailable(date, time)->int:
+    cursor.execute("SELECT COUNT(*) FROM Rooms;")
+    room_num = cursor.fetchone()[0] # gets the number of rooms
 
+    for j in range(1,room_num+1):
+        room_schedule = viewRoomsSchedule(j)
+        room_free = True
+        for row in room_schedule:
+            if row[3] == time and row[4] == date: 
+                room_free = False
+                break
+    
+        if room_free == False:
+            continue
+        return j
+
+    # if still not returned, then no room is available
+    return -1
 
 #MAIN
 def main():
@@ -334,8 +404,8 @@ def main():
                     #display health stats
                     displayHealthStats()
                 elif selection == "schedule1":
+                    schedulePT()
                     #schedule personal training session
-                    print("")
                 elif selection == "schedule2":
                     #schedule group fitness class
                     print("")
