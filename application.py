@@ -14,12 +14,12 @@ pswd = input("Enter password: ")
 
 #making connection
 connection = psycopg2.connect(
-        dbname="project",
-        user="postgres",
-        password="heyyadora",
-        host="localhost",
-        port="5432"
-    )
+    host = "localhost",
+    database="Final_Project",
+    user="postgres",
+    password="franzy613",
+    port="5432"
+)
 
 
 #cursor object to run queries
@@ -241,10 +241,17 @@ def updateHealth():
     print("Successfully updated your health metrics!")
 
 #display member's exercise routine
-def displayRoutine():
+#display member's health statistics
+#member_id argument is supplied when a trainer want to check a specific member. No argument is when a member is checking themselves
+def displayRoutine(member_id = None):
     global id
 
-    cursor.execute("SELECT step, exercise, reps FROM Routine WHERE member_id = " + id)
+    if not member_id:
+        val = id
+    else:
+        val = member_id
+
+    cursor.execute("SELECT step, exercise, reps FROM Routine WHERE member_id = " + val)
     dataset = cursor.fetchall()
 
     print("\nExercise Routine:")
@@ -254,10 +261,17 @@ def displayRoutine():
     print("\n")
 
 #display member's fitness goals
-def displayGoals(achieve):
+#display member's health statistics
+#member_id argument is supplied when a trainer want to check a specific member. No argument is when a member is checking themselves
+def displayGoals(achieve, member_id = None):
     global id
 
-    cursor.execute("SELECT goal_id, goal FROM Fitness_goals WHERE achieved = " + achieve + " and member_id = " + id)
+    if not member_id:
+        val = id
+    else:
+        val = member_id
+
+    cursor.execute("SELECT goal_id, goal FROM Fitness_goals WHERE achieved = " + achieve + " and member_id = " + val)
     dataset = cursor.fetchall()
 
     if achieve == "true":
@@ -271,10 +285,16 @@ def displayGoals(achieve):
     print("\n")
 
 #display member's health statistics
-def displayHealthStats():
+#member_id argument is supplied when a trainer want to check a specific member. No argument is when a member is checking themselves
+def displayHealthStats(member_id = None):
     global id
 
-    cursor.execute("SELECT age, weight, height FROM Members WHERE member_id = " + id)
+    if not member_id:
+        val = id
+    else:
+        val = member_id
+
+    cursor.execute("SELECT age, weight, height FROM Members WHERE member_id = " + val)
     dataset = cursor.fetchall()
 
     print("\nHealth Statistics:")
@@ -339,6 +359,24 @@ def isTrainerAvailable(date, time) -> int:
     # if still not returned, then no trainer is available
     return -1
 
+def displayProfile():
+
+    cursor.execute("SELECT * from Members")
+    data = cursor.fetchall()
+
+    for r in data:
+        print("member_id: {} full Name: {} {}".format(r[0], r[1], r[2]))
+    
+    id = input("What member would you like to check? (member_id): ")
+
+    cursor.execute("SELECT * from Members WHERE member_id = " + id)
+    data = cursor.fetchall()
+    print("")
+    for r in data:
+        print("member_id: {} full Name: {} {} age: {} weight: {} height: {} last_payment_date: {} next_payment_date: {} next_payment_amnt: {}".format(r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8]))
+    displayHealthStats(id)
+    displayGoals("true", id)
+    displayRoutine(id)
 
 #ADMIN FUNCTIONS
 def viewRoomsSchedule(num):
@@ -417,7 +455,7 @@ def main():
                     print("")
                 elif selection == "2":
                     #view member profile
-                    print("")
+                    displayProfile()
 
             #CALLING ADMIN FUNCTIONS
             elif memType == 3: 
