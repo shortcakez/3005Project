@@ -14,12 +14,12 @@ pswd = input("Enter password: ")
 
 #making connection
 connection = psycopg2.connect(
-    host = "localhost",
-    database="Final_Project",
-    user="postgres",
-    password="franzy613",
-    port="5432"
-)
+        dbname="project",
+        user="postgres",
+        password="heyyadora",
+        host="localhost",
+        port="5432"
+    )
 
 
 #cursor object to run queries
