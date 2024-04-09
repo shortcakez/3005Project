@@ -5,6 +5,7 @@ import datetime
 #global variables
 loggedin = False
 id = ""
+MAXGROUP = 8
 
 #getting postgres connection info from user
 '''
@@ -14,9 +15,9 @@ pswd = input("Enter password: ")
 
 #making connection
 connection = psycopg2.connect(
-        dbname="project",
+        dbname="Final project",
         user="postgres",
-        password="heyyadora",
+        password="Goat1234!!",
         host="localhost",
         port="5432"
     )
@@ -331,6 +332,41 @@ def schedulePT():
     print(f"Session sucessfully registered at {date}, {time}")
                 
 #schedule a group fitness class
+def scheduleGroupClass():
+    date = input("Enter what date you want to schedule your session (Format: YYYY-MM-DD): ")
+    time = input("Enter what time you want you want to schedule your session. You can only schedule at XX:00 or XX:30 times (Format: HH:MM): ")
+
+    time = "{}:00".format(time)
+
+    date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+    time = datetime.datetime.strptime(time, "%H:%M:%S").time()
+
+    trainer = isTrainerAvailable(date,time)
+    if(trainer == -1):
+        print("No trainer is available at that time, please pick another time")
+        return
+    
+    room = isRoomAvailable(date,time)
+       
+    if(room == -1):
+        print("No trainer is available at that time, please pick another time")
+        return
+    
+    cursor.execute("INSERT INTO Sessions (trainer_id, room_num, session_time, session_date) VALUES (%s, %s, %s, %s)", (trainer, room, time, date))
+    cursor.execute("SELECT session_id FROM Sessions WHERE trainer_id = %s AND room_num = %s AND session_date = %s AND session_time = %s", (trainer, room, date, time))
+    print(f"You are sucessfully registered for a group session at {date}, {time}")
+    sessionId = int((cursor.fetchone())[0])
+
+    print(sessionId)
+    participants = [(id, sessionId)]
+    while(len(participants) < MAXGROUP):
+        newParticipant = input("Enter participant id or enter 0 all participants have been registered: ")
+        if(newParticipant != '0'):
+            participants.append((int(newParticipant), sessionId))
+        else:
+            break
+    cursor.executemany("INSERT INTO Takes VALUES (%s,%s)", participants)
+    return
 
 
 #TRAINER FUNCTIONS
@@ -446,6 +482,7 @@ def main():
                     #schedule personal training session
                 elif selection == "schedule2":
                     #schedule group fitness class
+                    scheduleGroupClass()
                     print("")
 
             #CALLING TRAINER FUNCTIONS
