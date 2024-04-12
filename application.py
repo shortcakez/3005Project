@@ -17,7 +17,7 @@ pswd = input("Enter password: ")
 
 #making connection
 connection = psycopg2.connect(
-        dbname="Final project",
+        dbname="Final Project",
         user="postgres",
         password="Goat1234!!",
         host="localhost",
@@ -166,7 +166,7 @@ def userRegistration():
     date = datetime.datetime.now()
 
     values = "VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(fname, lname, weight, height, age, date, 20, creditCard[0], creditCard[1], creditCard[2])
-    
+
     cursor.execute("INSERT INTO Members (fname, lname, weight, height, age, next_payment_date, next_payment_amnt, credit_card_num, cvv, name_on_card) " + values)
     connection.commit()
     print("Registration complete. Welcome to the gym!")

@@ -1,4 +1,4 @@
-INSERT INTO Members (fname, lname, age, weight, height, last_payment_date, next_payment_date, next_payment_amnt, credit_card_num, cvv, name_on_card) VALUES
+INSERT INTO Members (fname, lname, age, weight, height, last_payment_date, next_payment_date, payment_amnt, credit_card_num, cvv, name_on_card) VALUES
 ('Allan', 'Cao', 20, 10, 10, NULL, '2024-04-01', 20, '1234123412341234', '123', 'Allan Cao'),
 ('Amy', 'Little', 21, 10, 150, NULL, '2024-04-01', 20, '2345234523452345', '234', 'Amy Little'),
 ('Audrey', 'Lun', 21, 11, 120, NULL, '2024-04-01', 20, '3456345634563456', '345', 'Audrey Lun'),
@@ -76,14 +76,14 @@ INSERT INTO Equipment_Maintenence (equipment_id, equipment_name, condition) VALU
 
 
 INSERT INTO Shift (trainer_id, day_of_week, start_time, end_time) VALUES
-(1, "Mon", "09:00:00", "05:00:00"),
-(1, "Tue", "09:00:00", "05:00:00"),
-(1, "Wed", "09:00:00", "05:00:00"),
-(1, "Thu", "11:00:00", "07:00:00"),
-(1, "Fri", "09:00:00", "05:00:00"),
-(1, "Sun", "09:00:00", "05:00:00"),
-(2, "Mon", "12:00:00", "08:00:00"),
-(2, "Tue", "09:00:00", "05:00:00"),
-(2, "Wed", "09:00:00", "05:00:00"),
-(2, "Fri", "12:00:00", "08:00:00"),
-(2, "Sat", "09:00:00", "05:00:00")
+(1, 'Mon', '09:00:00', '05:00:00'),
+(1, 'Tue', '09:00:00', '05:00:00'),
+(1, 'Wed', '09:00:00', '05:00:00'),
+(1, 'Thu', '11:00:00', '07:00:00'),
+(1, 'Fri', '09:00:00', '05:00:00'),
+(1, 'Sun', '09:00:00', '05:00:00'),
+(2, 'Mon', '12:00:00', '08:00:00'),
+(2, 'Tue', '09:00:00', '05:00:00'),
+(2, 'Wed', '09:00:00', '05:00:00'),
+(2, 'Fri', '12:00:00', '08:00:00'),
+(2, 'Sat', '09:00:00', '05:00:00')
