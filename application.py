@@ -97,7 +97,8 @@ def menu(memType):
             print("\t 1. Update personal information")
             print("\t 2. Update fitness goals")
             print("\t 3. Update health metrics")
-            subSelect = validate(1, 3)
+            print("\t 4. Update Exercise Routine")
+            subSelect = validate(1, 4)
             return "update" + subSelect
         elif select == "2":
             print("\t 1. Display exercise routines")
@@ -269,6 +270,22 @@ def updateHealth():
         cursor.execute("UPDATE Members SET weight = %s WHERE member_id = %s", (weight, id))
 
     print("Successfully updated your health metrics!")
+
+#update member's exercise routine
+def updateExercise():
+    global id
+
+    #options
+    print("\t1. Add exercise")
+    print("\t2. Delete exercise")
+    option = validate(1, 2)
+
+    if option == "1":
+        print()
+    elif option == "2":
+        print()
+
+    print("Successfully updated your exercise routine!")
 
 #display member's exercise routine
 #display member's health statistics
@@ -543,6 +560,9 @@ def main():
                 elif selection == "update3":
                     #update health metrics
                     updateHealth()
+                elif selection == "update4":
+                    #update exercise routine
+                    print("")
                 elif selection == "display1":
                     #display exercise routines
                     displayRoutine()
