@@ -42,7 +42,7 @@ CREATE TABLE Trainers (
 CREATE TABLE Shift (
     shift_id SERIAL PRIMARY KEY,
     trainer_id int,
-    day VARCHAR(3) NOT NULL,
+    day_of_week VARCHAR(3) NOT NULL,
     start_time TIME,
     end_time TIME,
     FOREIGN KEY (trainer_id)
