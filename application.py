@@ -141,6 +141,11 @@ def menu(memType):
         if select == "6":
             print("LOGGING OUT")
             return "0"
+        elif select == "3":
+            print("\t 1. Add a Group Class")
+            print("\t 2. Cancel a Group Class")
+            subSelect = input(">> ")
+            return "update" + subSelect
 
         return select
 
@@ -503,9 +508,9 @@ def maintenanceMonitoring():
 
         ans = str(input("Do you want to update another piece of equipment? (y/n): ")).lower()
 
-def updateClassSchedule():
-    date = input("Enter what date you want to schedule your session (Format: YYYY-MM-DD): ")
-    time = input("Enter what time you want you want to schedule your session. You can only schedule at XX:00 or XX:30 times (Format: HH:MM): ")
+def addClassSchedule():
+    date = input("Enter what date you want to schedule a group class (Format: YYYY-MM-DD): ")
+    time = input("Enter what time you want you want to schedule it. You can only schedule at XX:00 or XX:30 times (Format: HH:MM): ")
 
     time = "{}:00".format(time)
 
@@ -523,8 +528,20 @@ def updateClassSchedule():
         print("No room is available at that time, please pick another time")
         return
     
-    cursor.execute("INSERT INTO Sessions (trainer_id, room_num, session_type, session_date, session_type) VALUES (%s, %s, %s, %s, group)", (trainer, room, time, date))
-    print(f"You are sucessfully registered for a group session at {date}, {time}")
+    cursor.execute("INSERT INTO Sessions (trainer_id, room_num, session_time, session_date, session_type) VALUES (%s, %s, %s, %s, 'group')", (trainer, room, time, date))
+    print(f"You have successfully added a group class on {date} at {time}")
+
+def removeClassSchedule():
+    cursor.execute("SELECT * FROM Sessions WHERE session_type = 'group'")
+    result = cursor.fetchall()
+    
+    print("Session Id\tRoom #\tDate and Time")
+    for r in result:
+        print(" {}\t\t {}\t {} @ {}".format(r[0], r[2], r[4], r[3]))
+
+    sessionId = input("Enter the Id of the Session you would like to remove")
+    cursor.execute(f"DELETE FROM Takes WHERE session_id = {sessionId}")
+    cursor.execute(f"DELETE FROM Sessions WHERE session_id = {sessionId}")
 
 def paymentProcessing():
     cursor.execute("SELECT fname, lname, credit_card_num, payment_amnt FROM Members")
@@ -573,7 +590,7 @@ def main():
                     updateHealth()
                 elif selection == "update4":
                     #update exercise routine
-                    print("")
+                    updateExercise()
                 elif selection == "display1":
                     #display exercise routines
                     displayRoutine()
@@ -584,8 +601,8 @@ def main():
                     #display health stats
                     displayHealthStats()
                 elif selection == "schedule1":
-                    schedulePT()
                     #schedule personal training session
+                    schedulePT()
                 elif selection == "schedule2":
                     #schedule group fitness class
                     registerForClass()
@@ -607,9 +624,12 @@ def main():
                 elif selection == "2":
                     #monitor eqipement
                     maintenanceMonitoring()
-                elif selection == "3":
-                    #update class schedule
-                    print("") 
+                elif selection == "update1":
+                    #add to class schedules
+                    addClassSchedule()
+                elif selection == "update2":
+                    #remove from class schedules
+                    removeClassSchedule()
                 elif selection == "4":
                     #process billing and payment
                     paymentProcessing()
