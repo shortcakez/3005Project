@@ -54,7 +54,7 @@ INSERT INTO Rooms (room_type) VALUES
 ('Weight Room'),
 ('Weight Room');
 
-INSERT INTO Sessions (trainer_id, room_num, session_time, session_date, type) VALUES
+INSERT INTO Sessions (trainer_id, room_num, session_time, session_date, session_type) VALUES
 (1, 1, '12:30:00', '2024-04-5', 'group'),
 (1, 1, '12:30:00', '2024-04-7', 'group'),
 (2, 5, '20:00:00', '2024-05-02', 'group'),

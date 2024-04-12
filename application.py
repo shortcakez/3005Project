@@ -385,7 +385,7 @@ def schedulePT():
         print("No trainer is available at that time, please pick another time")
         return
     
-    cursor.execute("INSERT INTO Sessions (trainer_id, room_num, session_time, session_date) VALUES (%s, %s, %s, %s)", (trainer, room, time, date))
+    cursor.execute("INSERT INTO Sessions (trainer_id, room_num, session_time, session_date, session_type) VALUES (%s, %s, %s, %s, personal)", (trainer, room, time, date))
     cursor.execute("SELECT session_id FROM Sessions WHERE trainer_id = %s AND room_num = %s AND session_date = %s AND session_time = %s", (trainer, room, date, time))
     sessionId = int((cursor.fetchone())[0])
     print(f"Session sucessfully registered at {date}, {time}")
@@ -393,41 +393,17 @@ def schedulePT():
 
                 
 #schedule a group fitness class
-def scheduleGroupClass():
-    date = input("Enter what date you want to schedule your session (Format: YYYY-MM-DD): ")
-    time = input("Enter what time you want you want to schedule your session. You can only schedule at XX:00 or XX:30 times (Format: HH:MM): ")
-
-    time = "{}:00".format(time)
-
-    date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
-    time = datetime.datetime.strptime(time, "%H:%M:%S").time()
-
-    trainer = isTrainerAvailable(date,time)
-    if(trainer == -1):
-        print("No trainer is available at that time, please pick another time")
-        return
+def registerForClass():
+    cursor.execute("SELECT * FROM Sessions WHERE session_type = 'group'")
+    result = cursor.fetchall()
     
-    room = isRoomAvailable(date,time)
-       
-    if(room == -1):
-        print("No trainer is available at that time, please pick another time")
-        return
-    
-    cursor.execute("INSERT INTO Sessions (trainer_id, room_num, session_time, session_date) VALUES (%s, %s, %s, %s)", (trainer, room, time, date))
-    cursor.execute("SELECT session_id FROM Sessions WHERE trainer_id = %s AND room_num = %s AND session_date = %s AND session_time = %s", (trainer, room, date, time))
-    print(f"You are sucessfully registered for a group session at {date}, {time}")
-    sessionId = int((cursor.fetchone())[0])
+    print("Session Id\tRoom #\tDate and Time")
+    for r in result:
+        print(" {}\t\t {}\t {} @ {}".format(r[0], r[2], r[4], r[3]))
 
-    print(sessionId)
-    participants = [(id, sessionId)]
-    while(len(participants) < MAXGROUP):
-        newParticipant = input("Enter participant id or enter 0 all participants have been registered: ")
-        if(newParticipant != '0'):
-            participants.append((int(newParticipant), sessionId))
-        else:
-            break
-    cursor.executemany("INSERT INTO Takes VALUES (%s,%s)", participants)
-    return
+    sessionId = input("Enter the id of the session you would like to sign up for: ")
+    cursor.execute("INSERT INTO Takes VALUES (%s, %s)", (id, sessionId))
+    print(f"You have successfully been registered for session {sessionId}")
 
 
 #TRAINER FUNCTIONS
@@ -527,6 +503,29 @@ def maintenanceMonitoring():
 
         ans = str(input("Do you want to update another piece of equipment? (y/n): ")).lower()
 
+def updateClassSchedule():
+    date = input("Enter what date you want to schedule your session (Format: YYYY-MM-DD): ")
+    time = input("Enter what time you want you want to schedule your session. You can only schedule at XX:00 or XX:30 times (Format: HH:MM): ")
+
+    time = "{}:00".format(time)
+
+    date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+    time = datetime.datetime.strptime(time, "%H:%M:%S").time()
+
+    trainer = isTrainerAvailable(date,time)
+    if(trainer == -1):
+        print("No trainer is available at that time, please pick another time")
+        return
+    
+    room = isRoomAvailable(date,time)
+       
+    if(room == -1):
+        print("No room is available at that time, please pick another time")
+        return
+    
+    cursor.execute("INSERT INTO Sessions (trainer_id, room_num, session_type, session_date, session_type) VALUES (%s, %s, %s, %s, group)", (trainer, room, time, date))
+    print(f"You are sucessfully registered for a group session at {date}, {time}")
+
 def paymentProcessing():
     cursor.execute("SELECT fname, lname, credit_card_num, payment_amnt FROM Members")
     result = cursor.fetchall()
@@ -589,7 +588,7 @@ def main():
                     #schedule personal training session
                 elif selection == "schedule2":
                     #schedule group fitness class
-                    scheduleGroupClass()
+                    registerForClass()
 
             #CALLING TRAINER FUNCTIONS
             elif memType == 2:
