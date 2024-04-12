@@ -390,7 +390,7 @@ def schedulePT():
         print("No room is available at that time, please pick another time")
         return
     
-    cursor.execute("INSERT INTO Sessions (trainer_id, room_num, session_time, session_date, session_type) VALUES (%s, %s, %s, %s, personal)", (trainer, room, time, date))
+    cursor.execute("INSERT INTO Sessions (trainer_id, room_num, session_time, session_date, session_type) VALUES (%s, %s, %s, %s, 'personal')", (trainer, room, time, date))
     cursor.execute("SELECT session_id FROM Sessions WHERE trainer_id = %s AND room_num = %s AND session_date = %s AND session_time = %s", (trainer, room, date, time))
     sessionId = int((cursor.fetchone())[0])
     print(f"Session sucessfully registered at {date}, {time}")
@@ -423,12 +423,14 @@ def isTrainerAvailable(date, time) -> int:
     dayWeek = days[date.weekday()]
 
     for i in range(1,trainer_num+1):
-        cursor.execute(f"SELECT * from Shift WHERE trainer_id = {str(i)} and day_of_week = {dayWeek}")
+        cursor.execute(f"SELECT * from Shift WHERE trainer_id = {str(i)} and day_of_week = '{dayWeek}'")
         shiftTime = cursor.fetchone()
-
+        print(shiftTime)
         if shiftTime == None: # If current trainer not working on that day of the week
             continue
-        if not shiftTime[2] <= time <= shiftTime[3]: # If current trainer not working at that time. Assume trainers not available at midnight
+        startTime =shiftTime[3]
+        endTime =shiftTime[4]
+        if not startTime <= time <= endTime: # If current trainer not working at that time. Assume trainers not available at midnight
             continue
 
         schedule = viewTrainerSchedule(i)
