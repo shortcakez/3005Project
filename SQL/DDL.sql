@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS Members, Fitness_goals, Routine, Trainers, Rooms, Sessions, Admin_staff, Equipment_Maintenence, Takes;
+DROP TABLE IF EXISTS Members, Fitness_goals, Routine, Trainers, Rooms, Sessions, Admin_staff, Equipment_Maintenence, Takes, Shift;
 
 CREATE TABLE Members (
     member_id SERIAL PRIMARY KEY,
@@ -11,7 +11,7 @@ CREATE TABLE Members (
     next_payment_date DATE,
     payment_amnt FLOAT,
     credit_card_num VARCHAR(16) UNIQUE NOT NULL,
-    cvv VARCHAR(3) UNIQUE NOT NULL,
+    cvv VARCHAR(3) NOT NULL,
     name_on_card VARCHAR(30) NOT NULL
 );
 
@@ -84,4 +84,4 @@ CREATE TABLE Takes (
         REFERENCES Members (member_id),
     FOREIGN KEY (session_id)
         REFERENCES Sessions (session_id)
-)
+);

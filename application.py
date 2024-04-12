@@ -167,7 +167,7 @@ def userRegistration():
 
     values = "VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(fname, lname, weight, height, age, date, 20, creditCard[0], creditCard[1], creditCard[2])
 
-    cursor.execute("INSERT INTO Members (fname, lname, weight, height, age, next_payment_date, next_payment_amnt, credit_card_num, cvv, name_on_card) " + values)
+    cursor.execute("INSERT INTO Members (fname, lname, weight, height, age, next_payment_date, payment_amnt, credit_card_num, cvv, name_on_card) " + values)
     connection.commit()
     print("Registration complete. Welcome to the gym!")
 
@@ -175,15 +175,19 @@ def validateCreditCard():
     valid = False
     while valid == False:
         creditCardInput = input("\t Enter your credit card number: ")
-        if (re.search("\b\d{16}\b", creditCardInput)):
+        if (re.match("^\d{16}$", creditCardInput) != None):
             creditcardNum = creditCardInput
             valid = True
+            break
+        print("invalid credit card number")
     valid = False
     while valid == False:
         creditCardInput = input("\t Enter your cvv number: ")
-        if (re.search("\b\d{3}\b", creditCardInput)):
+        if (re.search("^\d{3}$", creditCardInput)):
             cvv = creditCardInput
             valid = True
+            break
+        print("invalid cvv number")
     nameOnCard = input("\t Enter the name on your credit card: ")
     return (creditcardNum, cvv, nameOnCard)
 
@@ -204,7 +208,7 @@ def updateInfo():
         cursor.execute("UPDATE Members SET lname = %s WHERE member_id = %s", (lname, id))
     else:
         creditCard = validateCreditCard()
-        cursor.execute("UPDATE Members SET credit_card_num = %s, cvv = %s, name_on_card = %s", creditCard[0], creditCard[1], creditCard[2])
+        cursor.execute("UPDATE Members SET credit_card_num = %s, cvv = %s, name_on_card = %s WHERE member_id = %s", (creditCard[0], creditCard[1], creditCard[2], id))
     print("Successfully updated your personal information!")
 
 #update member's fitness goals
