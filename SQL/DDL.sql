@@ -74,6 +74,7 @@ CREATE TABLE Admin_staff (
 
 CREATE TABLE Equipment_Maintenence (
     equipment_id SERIAL PRIMARY KEY,
+    equipment_name VARCHAR(30),
     condition VARCHAR(30)
 );
 
