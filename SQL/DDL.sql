@@ -36,8 +36,18 @@ CREATE TABLE Routine (
 CREATE TABLE Trainers (
     trainer_id SERIAL PRIMARY KEY,
     fname VARCHAR(30) NOT NULL,
-    lname VARCHAR(30) NOT NULL
+    lname VARCHAR(30) NOT NULL,
 );
+
+CREATE TABLE Shift (
+    shift_id SERIAL PRIMARY KEY,
+    trainer_id int,
+    day VARCHAR(3) NOT NULL,
+    start_time TIME,
+    end_time TIME,
+    FOREIGN KEY (trainer_id)
+        REFERENCES KEY Trainers (trainer_id)
+)
 
 CREATE TABLE Rooms (
     room_id SERIAL PRIMARY KEY,
