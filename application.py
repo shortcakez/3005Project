@@ -412,6 +412,13 @@ def isTrainerAvailable(date, time) -> int:
     # if still not returned, then no trainer is available
     return -1
 
+def manageTrainerSchedule():
+    day = input("Enter what day of the week you're working (Mon, Tue, Wed, Thu, Fri, Sat, Sun): ")
+    startTime = input("Enter the time you're starting (XX:00): ")
+    endTime = input("Enter the time you're finishing (XX:00): ")
+    cursor.execute("INSERT INTO Shift (trainer_id, day_of_week, start_time, end_time) VALUES (%s, %s, %s, %s)", (id, day, startTime, endTime))
+    print(f"You will be working on {day} from {startTime} to {endTime}")
+    
 def displayProfile():
 
     cursor.execute("SELECT * from Members")
