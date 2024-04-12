@@ -1,6 +1,7 @@
 #imports
 import psycopg2
 import datetime
+import re
 
 #global variables
 loggedin = False
@@ -158,6 +159,21 @@ def userRegistration():
     age = input("\t Enter your age: ")
     weight = input("\t Enter your weight (lb): ")
     height = input("\t Enter your height (cm): ")
+
+    valid = False
+    while valid == False:
+        creditCardInput = input("\t Enter your credit card number: ")
+        if (re.search("\b\d{16}\b", creditCardInput)):
+            creditcardNum = creditCardInput
+            valid = True
+    valid = False
+    while valid == False:
+        creditCardInput = input("\t Enter your cvv number: ")
+        if (re.search("\b\d{3}\b", creditCardInput)):
+            cvv = creditCardInput
+            valid = True
+    nameOnCard = input("\t Enter the name on your credit card: ")
+
     date = datetime.datetime.now()
 
     values = "VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(fname, lname, weight, height, age, date, 20)

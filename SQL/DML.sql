@@ -1,9 +1,9 @@
-INSERT INTO Members (fname, lname, age, weight, height, last_payment_date, next_payment_date, next_payment_amnt) VALUES
-('Allan', 'Cao', 20, 10, 10, NULL, '2024-04-01', 20),
-('Amy', 'Little', 21, 10, 150, NULL, '2024-04-01', 20),
-('Audrey', 'Lun', 21, 11, 120, NULL, '2024-04-01', 20),
-('Ashley', 'Fong', 20, 9, 9, NULL, '2024-04-01', 20),
-('Toph', 'Beifong', 12, 70, 140, '2024-03-01', '2024-04-01', 50);
+INSERT INTO Members (fname, lname, age, weight, height, last_payment_date, next_payment_date, next_payment_amnt, credit_card_num, cvv, name_on_card) VALUES
+('Allan', 'Cao', 20, 10, 10, NULL, '2024-04-01', 20, '1234123412341234', '123', 'Allan Cao'),
+('Amy', 'Little', 21, 10, 150, NULL, '2024-04-01', 20, '2345234523452345', '234', 'Amy Little'),
+('Audrey', 'Lun', 21, 11, 120, NULL, '2024-04-01', 20, '3456345634563456', '345', 'Audrey Lun'),
+('Ashley', 'Fong', 20, 9, 9, NULL, '2024-04-01', 20, '4567456745674567', '456', 'Ashley Fong'),
+('Toph', 'Beifong', 12, 70, 140, '2024-03-01', '2024-04-01', 50, '5678567856785678', '567', 'Toph Beifong');
 
 INSERT INTO Trainers (fname, lname) VALUES
 ('Jeremy', 'Gilbert'),
