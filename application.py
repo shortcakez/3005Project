@@ -354,7 +354,11 @@ def schedulePT():
         return
     
     cursor.execute("INSERT INTO Sessions (trainer_id, room_num, session_time, session_date) VALUES (%s, %s, %s, %s)", (trainer, room, time, date))
+    cursor.execute("SELECT session_id FROM Sessions WHERE trainer_id = %s AND room_num = %s AND session_date = %s AND session_time = %s", (trainer, room, date, time))
+    sessionId = int((cursor.fetchone())[0])
     print(f"Session sucessfully registered at {date}, {time}")
+    cursor.execute("INSERT INTO Takes VALUES (%s,%s)", id, sessionId)
+
                 
 #schedule a group fitness class
 def scheduleGroupClass():
@@ -426,7 +430,7 @@ def manageTrainerSchedule():
     endTime = input("Enter the time you're finishing (XX:00): ")
     cursor.execute("INSERT INTO Shift (trainer_id, day_of_week, start_time, end_time) VALUES (%s, %s, %s, %s)", (id, day, startTime, endTime))
     print(f"You will be working on {day} from {startTime} to {endTime}")
-    
+
 def displayProfile():
 
     cursor.execute("SELECT * from Members")
