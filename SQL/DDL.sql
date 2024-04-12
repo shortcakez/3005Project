@@ -9,7 +9,7 @@ CREATE TABLE Members (
     height FLOAT,
     last_payment_date DATE,
     next_payment_date DATE,
-    payment_amnt FLOAT
+    payment_amnt FLOAT,
     credit_card_num VARCHAR(16) UNIQUE NOT NULL,
     cvv VARCHAR(3) UNIQUE NOT NULL,
     name_on_card VARCHAR(30) NOT NULL
@@ -36,7 +36,7 @@ CREATE TABLE Routine (
 CREATE TABLE Trainers (
     trainer_id SERIAL PRIMARY KEY,
     fname VARCHAR(30) NOT NULL,
-    lname VARCHAR(30) NOT NULL,
+    lname VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE Shift (
@@ -46,8 +46,8 @@ CREATE TABLE Shift (
     start_time TIME,
     end_time TIME,
     FOREIGN KEY (trainer_id)
-        REFERENCES KEY Trainers (trainer_id)
-)
+        REFERENCES Trainers (trainer_id)
+);
 
 CREATE TABLE Rooms (
     room_id SERIAL PRIMARY KEY,
