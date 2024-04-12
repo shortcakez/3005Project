@@ -134,10 +134,11 @@ def menu(memType):
         print("\t 2. Monitor Equipement Maintainence")
         print("\t 3. Update Class Schedule")
         print("\t 4. Process Billing and Payment")
-        print("\t 5. Logout")
-        select = validate(1, 5)
+        print("\t 5. View All Member Profiles")
+        print("\t 6. Logout")
+        select = validate(1, 6)
 
-        if select == "5":
+        if select == "6":
             print("LOGGING OUT")
             return "0"
 
@@ -476,7 +477,7 @@ def displayProfile():
     cursor.execute("SELECT * from Members WHERE member_id = " + memId)
     data = cursor.fetchall()
     print("\nName\t\tLast Payment Date\tNext Payment Date\tPayment Amount")
-    print(" {} {}\t {}\t\t\t{}\t\t ${}".format(data[0][1], data[0][2], data[0][6], data[0][7], data[0][8]))
+    print(" {} {}\t {}\t\t{}\t\t ${}".format(data[0][1], data[0][2], data[0][6], data[0][7], data[0][8]))
     displayHealthStats(memId)
     displayGoals("true", memId)
     displayRoutine(memId)
@@ -504,11 +505,13 @@ def isRoomAvailable(date, time)->int:
 
     # if still not returned, then no room is available
     return -1
+
 def maintenanceMonitoring():
-    cursor.execute("SELECT * from Equipment_Maintenence")
+    cursor.execute("SELECT * from Equipment_Maintenence ORDER BY equipment_id ASC")
     result = cursor.fetchall()
+    print("Equipment ID\tEquipment Name\t\tCondition")
     for r in result:
-        print("Equipment ID: {}, Equipment Name: {}, Condition: {}".format(r[0], r[1], r[2]))
+        print(" {}\t\t{}\t\t {}".format(r[0], r[1], r[2]))
 
     ans = str(input("Do you want to update the maintenance (y/n): ")).lower()
     while(ans == "y"):
@@ -518,24 +521,23 @@ def maintenanceMonitoring():
                 break
             except ValueError:
                 print("Input a number")
-        condition = str(input("What is the condition of this piece of equipment: "))
+        condition = str(input("What is the condition of this piece of equipment (GOOD, FAIR, POOR): "))
         cursor.execute("UPDATE Equipment_Maintenence SET condition = %s WHERE equipment_id = %s", (condition, equip_id))
         print(f"Updated {equip_id} to {condition}")
 
-        ans = str(input("Do you want to update another piece of equipment: ")).lower()
-
-
+        ans = str(input("Do you want to update another piece of equipment? (y/n): ")).lower()
 
 def paymentProcessing():
-    cursor.execute("SELECT fname, lname, credit_card_num, payment_amt FROM Members")
+    cursor.execute("SELECT fname, lname, credit_card_num, payment_amnt FROM Members")
     result = cursor.fetchall()
+    print("Full Name\t\tCredit Card #\t\t   Payment Amount")
     for r in result:
-        print("full Name: {} {} credit_card_num {} payment_amnt: {}".format(r[0], r[1], r[2], r[3]))
+        print("{} {}\t\t {}\t    ${}".format(r[0], r[1], r[2], r[3]))
     processPayment = input("\t Confirm payment [y/n]: ")
     if(processPayment == 'y'):
         date = datetime.datetime.now()
-        new_date = date + relativedelta(months=5)
-        cursor.execute("UPDATE Members SET last_payment = %s, next_payment_date = %s", (date, new_date))
+        new_date = date + relativedelta(months=1)
+        cursor.execute("UPDATE Members SET last_payment_date = %s, next_payment_date = %s", (date, new_date))
         print("Payment Processed.")
     else:
         print("Payment not Processed.")
@@ -593,7 +595,7 @@ def main():
             elif memType == 2:
                 if selection == "1":
                     #schedule management
-                    print("")
+                    manageTrainerSchedule()
                 elif selection == "2":
                     #view member profile
                     displayProfile()
@@ -605,13 +607,21 @@ def main():
                     print("")
                 elif selection == "2":
                     #monitor eqipement
-                    print("")
+                    maintenanceMonitoring()
                 elif selection == "3":
                     #update class schedule
                     print("") 
                 elif selection == "4":
                     #process billing and payment
                     paymentProcessing()
+                elif selection == "5":
+                    #view all member profiles
+                    cursor.execute("SELECT * from Members")
+                    data = cursor.fetchall()
+
+                    print("\nName\t\tLast Payment Date\tNext Payment Date\tPayment Amount")
+                    for r in data:
+                        print(" {} {}\t {}\t\t{}\t\t ${}".format(r[1], r[2], r[6], r[7], r[8]))
 
             #commiting changes to postgres
             connection.commit()
