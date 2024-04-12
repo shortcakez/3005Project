@@ -161,6 +161,17 @@ def userRegistration():
     weight = input("\t Enter your weight (lb): ")
     height = input("\t Enter your height (cm): ")
 
+    creditCard = validateCreditCard()
+
+    date = datetime.datetime.now()
+
+    values = "VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(fname, lname, weight, height, age, date, 20, creditCard[0], creditCard[1], creditCard[2])
+    
+    cursor.execute("INSERT INTO Members (fname, lname, weight, height, age, next_payment_date, next_payment_amnt, credit_card_num, cvv, name_on_card) " + values)
+    connection.commit()
+    print("Registration complete. Welcome to the gym!")
+
+def validateCreditCard():
     valid = False
     while valid == False:
         creditCardInput = input("\t Enter your credit card number: ")
@@ -174,13 +185,7 @@ def userRegistration():
             cvv = creditCardInput
             valid = True
     nameOnCard = input("\t Enter the name on your credit card: ")
-
-    date = datetime.datetime.now()
-
-    values = "VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(fname, lname, weight, height, age, date, 20, creditcardNum, cvv, nameOnCard)
-    cursor.execute("INSERT INTO Members (fname, lname, weight, height, age, next_payment_date, next_payment_amnt, credit_card_num, cvv, name_on_card) " + values)
-    connection.commit()
-    print("Registration complete. Welcome to the gym!")
+    return (creditcardNum, cvv, nameOnCard)
 
 #updating member's personal infomation
 def updateInfo():
@@ -188,15 +193,18 @@ def updateInfo():
     #options
     print("\t1. First name")
     print("\t2. Last name")
-    option = validate(1, 2)
+    print("\t3. Credit card info")
+    option = validate(1, 3)
 
     if option == "1":
         fname = input("Enter first name: ")
         cursor.execute("UPDATE Members SET fname = %s WHERE member_id = %s", (fname, id))
-    else:
+    elif option == "2":
         lname = input("Enter last name: ")
         cursor.execute("UPDATE Members SET lname = %s WHERE member_id = %s", (lname, id))
-
+    else:
+        creditCard = validateCreditCard()
+        cursor.execute("UPDATE Members SET credit_card_num = %s, cvv = %s, name_on_card = %s", creditCard[0], creditCard[1], creditCard[2])
     print("Successfully updated your personal information!")
 
 #update member's fitness goals
