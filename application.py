@@ -477,6 +477,27 @@ def isRoomAvailable(date, time)->int:
 
     # if still not returned, then no room is available
     return -1
+def maintenanceMonitoring():
+    cursor.execute("SELECT * from Equipment_Maintenence")
+    result = cursor.fetchall()
+    for r in result:
+        print("Equipment ID: {}, Equipment Name: {}, Condition: {}".format(r[0], r[1], r[2]))
+
+    ans = str(input("Do you want to update the maintenance (y/n): ")).lower()
+    while(ans == "y"):
+        while True:
+            try:
+                equip_id = int(input("What is the equipment's ID: "))
+                break
+            except ValueError:
+                print("Input a number")
+        condition = str(input("What is the condition of this piece of equipment: "))
+        cursor.execute("UPDATE Equipment_Maintenence SET condition = %s WHERE equipment_id = %s", (condition, equip_id))
+        print(f"Updated {equip_id} to {condition}")
+
+        ans = str(input("Do you want to update another piece of equipment: ")).lower()
+
+
 
 def paymentProcessing():
     cursor.execute("SELECT fname, lname, credit_card_num, payment_amt FROM Members")
