@@ -9,7 +9,7 @@ CREATE TABLE Members (
     height FLOAT,
     last_payment_date DATE,
     next_payment_date DATE,
-    next_payment_amnt FLOAT
+    payment_amnt FLOAT
     credit_card_num VARCHAR(16) UNIQUE NOT NULL,
     cvv VARCHAR(3) UNIQUE NOT NULL,
     name_on_card VARCHAR(30) NOT NULL

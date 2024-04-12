@@ -3,7 +3,7 @@ INSERT INTO Members (fname, lname, age, weight, height, last_payment_date, next_
 ('Amy', 'Little', 21, 10, 150, NULL, '2024-04-01', 20, '2345234523452345', '234', 'Amy Little'),
 ('Audrey', 'Lun', 21, 11, 120, NULL, '2024-04-01', 20, '3456345634563456', '345', 'Audrey Lun'),
 ('Ashley', 'Fong', 20, 9, 9, NULL, '2024-04-01', 20, '4567456745674567', '456', 'Ashley Fong'),
-('Toph', 'Beifong', 12, 70, 140, '2024-03-01', '2024-04-01', 50, '5678567856785678', '567', 'Toph Beifong');
+('Toph', 'Beifong', 12, 70, 140, '2024-03-01', '2024-04-01', 20, '5678567856785678', '567', 'Toph Beifong');
 
 INSERT INTO Trainers (fname, lname) VALUES
 ('Jeremy', 'Gilbert'),
