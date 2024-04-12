@@ -60,6 +60,7 @@ CREATE TABLE Sessions (
     room_num INT,
     session_time TIME,
     session_date DATE,
+    session_type VARCHAR(10),
     FOREIGN KEY (trainer_id)
         REFERENCES Trainers (trainer_id),
     FOREIGN KEY (room_num)

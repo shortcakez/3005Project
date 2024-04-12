@@ -54,21 +54,21 @@ INSERT INTO Rooms (room_type) VALUES
 ('Weight Room'),
 ('Weight Room');
 
-INSERT INTO Sessions (trainer_id, room_num, session_time, session_date) VALUES
-(1, 1, '12:30:00', '2024-04-5'),
-(1, 1, '12:30:00', '2024-04-7'),
-(2, 5, '20:00:00', '2024-05-02'),
-(2, 8, '19:00:00', '2024-10-30');
+INSERT INTO Sessions (trainer_id, room_num, session_time, session_date, type) VALUES
+(1, 1, '12:30:00', '2024-04-5', 'group'),
+(1, 1, '12:30:00', '2024-04-7', 'group'),
+(2, 5, '20:00:00', '2024-05-02', 'group'),
+(2, 8, '19:00:00', '2024-10-30', 'group');
 
 INSERT INTO Equipment_Maintenence (equipment_id, equipment_name, condition) VALUES
 (1, 'Bench_Press','GOOD'),
 (2, 'Leg_Press', 'GOOD'),
 (3, 'Pulldown_Machine','FAIR'),
-(4, 'Arm_Curl_Machine','Poor'),
+(4, 'Arm_Curl_Machine','POOR'),
 (5, 'Squat_Rack','GOOD'),
 (6, 'Treadmill', 'GOOD'),
 (7, 'Pull_Up_Machine','FAIR'),
-(8, 'Shoulder_Press','Poor'),
+(8, 'Shoulder_Press','POOR'),
 (9, 'Leg_Curl_Machine', 'GOOD'),
 (10, 'Exercise_Bike', 'GOOD'),
 (11, 'Stair_Machine','FAIR'),
