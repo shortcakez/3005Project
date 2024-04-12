@@ -25,11 +25,11 @@ CREATE TABLE Fitness_goals (
 );
 
 CREATE TABLE Routine (
-    step INT NOT NULL,
+    exercise_id INT NOT NULL,
     member_id INT,
     exercise VARCHAR(50) NOT NULL,
     reps INT NOT NULL,
-    PRIMARY KEY (member_id, step),
+    PRIMARY KEY (member_id, exercise_id),
     FOREIGN KEY (member_id) REFERENCES Members (member_id)
 );
 

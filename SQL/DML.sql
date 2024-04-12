@@ -26,7 +26,7 @@ INSERT INTO Fitness_goals (goal_id, member_id, goal, achieved) VALUES
 (2, 5, 'Fight firelord Ozai', true),
 (3, 5, 'Bench Ba Sing Se', false);
 
-INSERT INTO Routine (step, member_id, exercise, reps) VALUES
+INSERT INTO Routine (exercise_id, member_id, exercise, reps) VALUES
 (1, 1, 'Bicep Curl 20lbs', 20),
 (2, 1, 'Bicep Curl 50lbs', 30),
 (3, 1, 'Bench 140', 10),

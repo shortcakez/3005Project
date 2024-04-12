@@ -281,9 +281,19 @@ def updateExercise():
     option = validate(1, 2)
 
     if option == "1":
-        print()
+        exercise = input("What exercise do you want to add?")
+        reps = input("How many reps do want to add")
+        cursor.execute("SELECT MAX(exercise_id) FROM Routine WHERE member_id = %s", (id))
+        highest_id = cursor.fetchone()[0]
+        cursor.execute("INSERT INTO Routine (exercise_id, member_id, exercise, reps) VALUES (%s, %s, %s, %s)", (highest_id, id, exercise, reps))
+        print("Inserted into routine!")
     elif option == "2":
-        print()
+        exercise = input("What is the name of the exercise do you want to delete?")
+        cursor.execute(f"DELETE from Routine WHERE member_id = {id} AND exercise = {exercise}")
+        if cursor.rowcount == 0:
+            print("Exercise not found")
+        else:
+            print("Deleted Successfully!")
 
     print("Successfully updated your exercise routine!")
 
