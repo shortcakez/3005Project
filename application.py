@@ -176,8 +176,8 @@ def userRegistration():
 
     date = datetime.datetime.now()
 
-    values = "VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(fname, lname, weight, height, age, date, 20)
-    cursor.execute("INSERT INTO Members (fname, lname, weight, height, age, next_payment_date, next_payment_amnt) " + values)
+    values = "VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(fname, lname, weight, height, age, date, 20, creditcardNum, cvv, nameOnCard)
+    cursor.execute("INSERT INTO Members (fname, lname, weight, height, age, next_payment_date, next_payment_amnt, credit_card_num, cvv, name_on_card) " + values)
     connection.commit()
     print("Registration complete. Welcome to the gym!")
 
