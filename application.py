@@ -2,6 +2,7 @@
 import psycopg2
 import datetime
 import re
+from dateutil.relativedelta import relativedelta
 
 #global variables
 loggedin = False
@@ -454,6 +455,20 @@ def isRoomAvailable(date, time)->int:
     # if still not returned, then no room is available
     return -1
 
+def paymentProcessing():
+    cursor.execute("SELECT fname, lname, credit_card_num, payment_amt FROM Members")
+    result = cursor.fetchall()
+    for r in result:
+        print("full Name: {} {} credit_card_num {} payment_amnt: {}".format(r[0], r[1], r[2], r[3]))
+    processPayment = input("\t Confirm payment [y/n]: ")
+    if(processPayment == 'y'):
+        date = datetime.datetime.now()
+        new_date = date + relativedelta(months=5)
+        cursor.execute("UPDATE Members SET last_payment = %s, next_payment_date = %s", (date, new_date))
+        print("Payment Processed.")
+    else:
+        print("Payment not Processed.")
+
 #MAIN
 def main():
     memType = 1
@@ -499,7 +514,6 @@ def main():
                 elif selection == "schedule2":
                     #schedule group fitness class
                     scheduleGroupClass()
-                    print("")
 
             #CALLING TRAINER FUNCTIONS
             elif memType == 2:
@@ -523,7 +537,7 @@ def main():
                     print("") 
                 elif selection == "4":
                     #process billing and payment
-                    print("")
+                    paymentProcessing()
 
             #commiting changes to postgres
             connection.commit()
