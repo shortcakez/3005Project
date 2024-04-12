@@ -1,6 +1,8 @@
 #imports
 import psycopg2
 import datetime
+import re
+from dateutil.relativedelta import relativedelta
 
 #global variables
 loggedin = False
@@ -158,12 +160,31 @@ def userRegistration():
     age = input("\t Enter your age: ")
     weight = input("\t Enter your weight (lb): ")
     height = input("\t Enter your height (cm): ")
+
+    creditCard = validateCreditCard()
+
     date = datetime.datetime.now()
 
-    values = "VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(fname, lname, weight, height, age, date, 20)
-    cursor.execute("INSERT INTO Members (fname, lname, weight, height, age, next_payment_date, next_payment_amnt) " + values)
+    values = "VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(fname, lname, weight, height, age, date, 20, creditCard[0], creditCard[1], creditCard[2])
+    cursor.execute("INSERT INTO Members (fname, lname, weight, height, age, next_payment_date, next_payment_amnt, credit_card_num, cvv, name_on_card) " + values)
     connection.commit()
     print("Registration complete. Welcome to the gym!")
+
+def validateCreditCard():
+    valid = False
+    while valid == False:
+        creditCardInput = input("\t Enter your credit card number: ")
+        if (re.search("\b\d{16}\b", creditCardInput)):
+            creditcardNum = creditCardInput
+            valid = True
+    valid = False
+    while valid == False:
+        creditCardInput = input("\t Enter your cvv number: ")
+        if (re.search("\b\d{3}\b", creditCardInput)):
+            cvv = creditCardInput
+            valid = True
+    nameOnCard = input("\t Enter the name on your credit card: ")
+    return (creditcardNum, cvv, nameOnCard)
 
 #updating member's personal infomation
 def updateInfo():
@@ -171,15 +192,18 @@ def updateInfo():
     #options
     print("\t1. First name")
     print("\t2. Last name")
-    option = validate(1, 2)
+    print("\t3. Credit card info")
+    option = validate(1, 3)
 
     if option == "1":
         fname = input("Enter first name: ")
         cursor.execute("UPDATE Members SET fname = %s WHERE member_id = %s", (fname, id))
-    else:
+    elif option == "2":
         lname = input("Enter last name: ")
         cursor.execute("UPDATE Members SET lname = %s WHERE member_id = %s", (lname, id))
-
+    else:
+        creditCard = validateCreditCard()
+        cursor.execute("UPDATE Members SET credit_card_num = %s, cvv = %s, name_on_card = %s", creditCard[0], creditCard[1], creditCard[2])
     print("Successfully updated your personal information!")
 
 #update member's fitness goals
@@ -438,6 +462,20 @@ def isRoomAvailable(date, time)->int:
     # if still not returned, then no room is available
     return -1
 
+def paymentProcessing():
+    cursor.execute("SELECT fname, lname, credit_card_num, payment_amt FROM Members")
+    result = cursor.fetchall()
+    for r in result:
+        print("full Name: {} {} credit_card_num {} payment_amnt: {}".format(r[0], r[1], r[2], r[3]))
+    processPayment = input("\t Confirm payment [y/n]: ")
+    if(processPayment == 'y'):
+        date = datetime.datetime.now()
+        new_date = date + relativedelta(months=5)
+        cursor.execute("UPDATE Members SET last_payment = %s, next_payment_date = %s", (date, new_date))
+        print("Payment Processed.")
+    else:
+        print("Payment not Processed.")
+
 #MAIN
 def main():
     memType = 1
@@ -483,7 +521,6 @@ def main():
                 elif selection == "schedule2":
                     #schedule group fitness class
                     scheduleGroupClass()
-                    print("")
 
             #CALLING TRAINER FUNCTIONS
             elif memType == 2:
@@ -507,7 +544,7 @@ def main():
                     print("") 
                 elif selection == "4":
                     #process billing and payment
-                    print("")
+                    paymentProcessing()
 
             #commiting changes to postgres
             connection.commit()
