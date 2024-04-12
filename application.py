@@ -304,7 +304,7 @@ def displayRoutine(member_id = None):
     print("\nExercise Routine:")
     print("Step\tExercise\t\t\tReps")
     for data in dataset:
-        print(" {}\t {}\t\t {}".format(data[0], data[1], data[2]))
+        print(" {}\t {}\t\t\t {}".format(data[0], data[1], data[2]))
     print("\n")
 
 #display member's fitness goals
@@ -345,9 +345,9 @@ def displayHealthStats(member_id = None):
     dataset = cursor.fetchall()
 
     print("\nHealth Statistics:")
-    print("Age\tWeight\t  Height")
+    print("Age\tWeight\t\tHeight")
     for data in dataset:
-        print(" {}\t {}\t   {}".format(data[0], data[1], data[2]))
+        print(" {}\t {} lb\t   {} cm".format(data[0], data[1], data[2]))
     print("\n")
 
 #scheduling a personal training session
@@ -378,7 +378,7 @@ def schedulePT():
     cursor.execute("SELECT session_id FROM Sessions WHERE trainer_id = %s AND room_num = %s AND session_date = %s AND session_time = %s", (trainer, room, date, time))
     sessionId = int((cursor.fetchone())[0])
     print(f"Session sucessfully registered at {date}, {time}")
-    cursor.execute("INSERT INTO Takes VALUES (%s,%s)", id, sessionId)
+    cursor.execute("INSERT INTO Takes VALUES (%s,%s)", (id, sessionId))
 
                 
 #schedule a group fitness class
@@ -457,19 +457,19 @@ def displayProfile():
     cursor.execute("SELECT * from Members")
     data = cursor.fetchall()
 
+    print("Member ID\tName")
     for r in data:
-        print("member_id: {} full Name: {} {}".format(r[0], r[1], r[2]))
+        print(" {} \t\t {} {}".format(r[0], r[1], r[2]))
     
-    id = input("What member would you like to check? (member_id): ")
+    memId = input("What member would you like to check? (member_id): ")
 
-    cursor.execute("SELECT * from Members WHERE member_id = " + id)
+    cursor.execute("SELECT * from Members WHERE member_id = " + memId)
     data = cursor.fetchall()
-    print("")
-    for r in data:
-        print("member_id: {} full Name: {} {} age: {} weight: {} height: {} last_payment_date: {} next_payment_date: {} next_payment_amnt: {}".format(r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8]))
-    displayHealthStats(id)
-    displayGoals("true", id)
-    displayRoutine(id)
+    print("\nName\t\tLast Payment Date\tNext Payment Date\tPayment Amount")
+    print(" {} {}\t {}\t\t\t{}\t\t ${}".format(data[0][1], data[0][2], data[0][6], data[0][7], data[0][8]))
+    displayHealthStats(memId)
+    displayGoals("true", memId)
+    displayRoutine(memId)
 
 #ADMIN FUNCTIONS
 def viewRoomsSchedule(num):
