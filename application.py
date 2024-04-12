@@ -387,7 +387,7 @@ def schedulePT():
     room = isRoomAvailable(date,time)
        
     if(room == -1):
-        print("No trainer is available at that time, please pick another time")
+        print("No room is available at that time, please pick another time")
         return
     
     cursor.execute("INSERT INTO Sessions (trainer_id, room_num, session_time, session_date, session_type) VALUES (%s, %s, %s, %s, personal)", (trainer, room, time, date))
@@ -419,8 +419,17 @@ def viewTrainerSchedule(trainer_id):
 def isTrainerAvailable(date, time) -> int:
     cursor.execute("SELECT COUNT(*) FROM TRAINERS;")
     trainer_num = cursor.fetchone()[0] # gets the number of trainers
+    days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    dayWeek = days[date.weekday()]
 
     for i in range(1,trainer_num+1):
+        cursor.execute(f"SELECT * from Shift WHERE trainer_id = {str(i)} and day_of_week = {dayWeek}")
+        shiftTime = cursor.fetchone()
+
+        if shiftTime == None: # If current trainer not working on that day of the week
+            continue
+        if not shiftTime[2] <= time <= shiftTime[3]: # If current trainer not working at that time. Assume trainers not available at midnight
+            continue
 
         schedule = viewTrainerSchedule(i)
         trainer_free = True
