@@ -26,19 +26,19 @@ INSERT INTO Fitness_goals (goal_id, member_id, goal, achieved) VALUES
 (2, 5, 'Fight firelord Ozai', true),
 (3, 5, 'Bench Ba Sing Se', false);
 
-INSERT INTO Routine (exercise_id, member_id, exercise, reps) VALUES
-(1, 1, 'Bicep Curl 20lbs', 20),
-(2, 1, 'Bicep Curl 50lbs', 30),
-(3, 1, 'Bench 140', 10),
-(1, 2, 'Sprint 100m', 5),
-(2, 2, 'Pull-ups', 3),
-(1, 3, 'Run a quarter-marathon', 2),
-(2, 3, 'Run a third-marathon', 1),
-(1, 4, 'Forward lunge', 50),
-(2, 4, 'Sideways lunge', 50),
-(1, 5, 'Throw boulder at Aang', 10),
-(2, 5, 'Use seismic sense', 30),
-(3, 5, 'Beat THE Boulder', 5);
+INSERT INTO Routine (member_id, exercise, reps) VALUES
+(1, 'Bicep Curl 20lbs', 20),
+(1, 'Bicep Curl 50lbs', 30),
+(1, 'Bench 140', 10),
+(2, 'Sprint 100m', 5),
+(2, 'Pull-ups', 3),
+(3, 'Run a quarter-marathon', 2),
+(3, 'Run a third-marathon', 1),
+(4, 'Forward lunge', 50),
+(4, 'Sideways lunge', 50),
+(5, 'Throw boulder at Aang', 10),
+(5, 'Use seismic sense', 30),
+(5, 'Beat THE Boulder', 5);
 
 INSERT INTO Rooms (room_type, availability) VALUES
 ('Weight Room', true),

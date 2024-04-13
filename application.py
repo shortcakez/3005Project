@@ -315,13 +315,13 @@ def displayRoutine(member_id = None):
     else:
         val = member_id
 
-    cursor.execute("SELECT step, exercise, reps FROM Routine WHERE member_id = " + val)
+    cursor.execute("SELECT exercise, reps FROM Routine WHERE member_id = " + val)
     dataset = cursor.fetchall()
 
     print("\nExercise Routine:")
-    print("Step\tExercise\t\t\tReps")
+    print("Exercise\t\t\tReps")
     for data in dataset:
-        print(" {}\t {}\t\t\t {}".format(data[0], data[1], data[2]))
+        print("{}\t\t\t {}".format(data[0], data[1]))
     print("\n")
 
 #display member's fitness goals
