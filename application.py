@@ -10,16 +10,14 @@ id = ""
 MAXGROUP = 8
 
 #getting postgres connection info from user
-'''
 db = input("Enter database name: ")
 pswd = input("Enter password: ")
-'''
 
 #making connection
 connection = psycopg2.connect(
-        dbname="Final Project",
+        dbname=db,
         user="postgres",
-        password="Goat1234!!",
+        password=pswd,
         host="localhost",
         port="5432"
     )
