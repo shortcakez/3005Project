@@ -17,9 +17,9 @@ pswd = input("Enter password: ")
 
 #making connection
 connection = psycopg2.connect(
-        dbname="Final_Project",
+        dbname="Final Project",
         user="postgres",
-        password="franzy613",
+        password="Goat1234!!",
         host="localhost",
         port="5432"
     )
@@ -496,23 +496,42 @@ def manageTrainerSchedule():
         
 
 def displayProfile():
+    print("\t1. Search for member by name")
+    print("\t2. View all members")
+    option = validate(1, 2)
 
-    cursor.execute("SELECT * from Members")
-    data = cursor.fetchall()
+    if option == '1':
+        print("Enter the name of the member who's profile you would like to see: ")
+        first = input("First Name: ")
+        last = input("Last Name: ")
+        cursor.execute(f"SELECT * FROM Members WHERE fname = '{first}' AND lname = '{last}'")
+        
+        data = cursor.fetchall()
+        if(len(data) == 0):
+            print("No member found")
+        else:
+            print("\nName\t\tLast Payment Date\tNext Payment Date\tPayment Amount")
+            print(" {} {}\t {}\t\t{}\t\t ${}".format(data[0][1], data[0][2], data[0][6], data[0][7], data[0][8]))
+            displayHealthStats(str(data[0][0]))
+            displayGoals("true", str(data[0][0]))
+            displayRoutine(str(data[0][0]))
+    if option == '2':     
+        cursor.execute("SELECT * from Members")
+        data = cursor.fetchall()
 
-    print("Member ID\tName")
-    for r in data:
-        print(" {} \t\t {} {}".format(r[0], r[1], r[2]))
-    
-    memId = input("What member would you like to check? (member_id): ")
+        print("Member ID\tName")
+        for r in data:
+            print(" {} \t\t {} {}".format(r[0], r[1], r[2]))
+        
+        memId = input("What member would you like to check? (member_id): ")
 
-    cursor.execute("SELECT * from Members WHERE member_id = " + memId)
-    data = cursor.fetchall()
-    print("\nName\t\tLast Payment Date\tNext Payment Date\tPayment Amount")
-    print(" {} {}\t {}\t\t{}\t\t ${}".format(data[0][1], data[0][2], data[0][6], data[0][7], data[0][8]))
-    displayHealthStats(memId)
-    displayGoals("true", memId)
-    displayRoutine(memId)
+        cursor.execute("SELECT * from Members WHERE member_id = " + memId)
+        data = cursor.fetchall()
+        print("\nName\t\tLast Payment Date\tNext Payment Date\tPayment Amount")
+        print(" {} {}\t {}\t\t{}\t\t ${}".format(data[0][1], data[0][2], data[0][6], data[0][7], data[0][8]))
+        displayHealthStats(memId)
+        displayGoals("true", memId)
+        displayRoutine(memId)
 
 #ADMIN FUNCTIONS
 def manageRoomBookings():
