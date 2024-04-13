@@ -51,7 +51,8 @@ CREATE TABLE Shift (
 
 CREATE TABLE Rooms (
     room_id SERIAL PRIMARY KEY,
-    room_type VARCHAR(50)
+    room_type VARCHAR(50),
+    availability BOOLEAN
 );
 
 CREATE TABLE Sessions (

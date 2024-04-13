@@ -475,12 +475,25 @@ def displayProfile():
     displayRoutine(memId)
 
 #ADMIN FUNCTIONS
+def manageRoomBookings():
+    cursor.execute("SELECT * FROM Rooms ORDER BY room_id ASC")
+    data = cursor.fetchall()
+    print("Room ID\t  Room Type\tAvailability")
+    for r in data:
+        print(" {}\t   {}\t {}".format(r[0], r[1], r[2]))
+
+    roomId = input("Enter the room's id number: ")
+    availablility = input("Change availability to (true/false): ")
+
+    cursor.execute("UPDATE Rooms SET availability = " + availablility + " WHERE room_id = " + roomId)
+    print("Successfully change room availability")
+
 def viewRoomsSchedule(num):
-    cursor.execute("SELECT * from Sessions WHERE room_num = " + str(num))
+    cursor.execute("SELECT * FROM Sessions WHERE room_num = " + str(num))
     return cursor.fetchall()
 
 def isRoomAvailable(date, time)->int:
-    cursor.execute("SELECT COUNT(*) FROM Rooms;")
+    cursor.execute("SELECT COUNT(*) FROM Rooms WHERE availability = true;")
     room_num = cursor.fetchone()[0] # gets the number of rooms
 
     for j in range(1,room_num+1):
@@ -550,9 +563,10 @@ def removeClassSchedule():
     for r in result:
         print(" {}\t\t {}\t {} @ {}".format(r[0], r[2], r[4], r[3]))
 
-    sessionId = input("Enter the Id of the Session you would like to remove")
+    sessionId = input("Enter the Id of the Session you would like to remove: ")
     cursor.execute(f"DELETE FROM Takes WHERE session_id = {sessionId}")
     cursor.execute(f"DELETE FROM Sessions WHERE session_id = {sessionId}")
+    print("Successfully removed the group class")
 
 def paymentProcessing():
     cursor.execute("SELECT fname, lname, credit_card_num, payment_amnt FROM Members")
@@ -631,7 +645,7 @@ def main():
             elif memType == 3: 
                 if selection == "1":
                     #manage room booking
-                    print("")
+                    manageRoomBookings()
                 elif selection == "2":
                     #monitor eqipement
                     maintenanceMonitoring()

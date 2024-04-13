@@ -40,19 +40,19 @@ INSERT INTO Routine (exercise_id, member_id, exercise, reps) VALUES
 (2, 5, 'Use seismic sense', 30),
 (3, 5, 'Beat THE Boulder', 5);
 
-INSERT INTO Rooms (room_type) VALUES
-('Weight Room'),
-('Weight Room'),
-('Weight Room'),
-('Weight Room'),
-('Weight Room'),
-('Weight Room'),
-('Weight Room'),
-('Weight Room'),
-('Weight Room'),
-('Weight Room'),
-('Weight Room'),
-('Weight Room');
+INSERT INTO Rooms (room_type, availability) VALUES
+('Weight Room', true),
+('Weight Room', true),
+('Weight Room', true),
+('Weight Room', true),
+('Weight Room', true),
+('Weight Room', true),
+('Weight Room', true),
+('Weight Room', true),
+('Weight Room', true),
+('Weight Room', true),
+('Weight Room', true),
+('Weight Room', true);
 
 INSERT INTO Sessions (trainer_id, room_num, session_time, session_date, session_type) VALUES
 (1, 1, '12:30:00', '2024-04-5', 'group'),
