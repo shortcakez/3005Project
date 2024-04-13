@@ -17,9 +17,9 @@ pswd = input("Enter password: ")
 
 #making connection
 connection = psycopg2.connect(
-        dbname="Final Project",
+        dbname="Final_Project",
         user="postgres",
-        password="Goat1234!!",
+        password="franzy613",
         host="localhost",
         port="5432"
     )
@@ -450,11 +450,10 @@ def isTrainerAvailable(date, time) -> int:
     for i in range(1,trainer_num+1):
         cursor.execute(f"SELECT * from Shift WHERE trainer_id = {str(i)} and day_of_week = '{dayWeek}'")
         shiftTime = cursor.fetchone()
-        print(shiftTime)
         if shiftTime == None: # If current trainer not working on that day of the week
             continue
-        startTime =shiftTime[3]
-        endTime =shiftTime[4]
+        startTime = shiftTime[3]
+        endTime = shiftTime[4]
         if not startTime <= time <= endTime: # If current trainer not working at that time. Assume trainers not available at midnight
             continue
 
