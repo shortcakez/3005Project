@@ -109,7 +109,8 @@ def menu(memType):
         elif select == "3":
             print("\t 1. Schedule personal training session")
             print("\t 2. Schedule group fitness class")
-            subSelect = validate(1, 2)
+            print("\t 3. Cancel a class")
+            subSelect = validate(1, 3)
             return "schedule" + subSelect
         elif select == "4":
             print("LOGGING OUT")
@@ -410,6 +411,29 @@ def registerForClass():
     cursor.execute("INSERT INTO Takes VALUES (%s, %s)", (id, sessionId))
     print(f"You have successfully been registered for session {sessionId}")
 
+def cancelClass():
+    cursor.execute(f"SELECT Takes.session_id, room_num, session_date, session_time, session_type FROM Takes JOIN Sessions ON Takes.session_id = Sessions.session_id WHERE member_id = {id}")
+    result = cursor.fetchall()
+    
+    print("Session Id\tRoom #\tDate and Time")
+    for r in result:
+        print(" {}\t\t {}\t {} @ {}".format(r[0], r[1], r[2], r[3]))
+
+    sessionId = input("Enter the id of the session you would like to reschedule: ")
+    session_type = ""
+    for r in result:
+        if r[0] == int(sessionId):
+            session_type = r[4]
+            break
+
+    if session_type == 'personal':
+        cursor.execute(f"DELETE FROM Takes WHERE session_id = {sessionId}")
+        cursor.execute(f"DELETE FROM Sessions WHERE session_id = {sessionId}")
+        print("You have successfully cancelled the session\n")
+    elif session_type == 'group':
+        cursor.execute(f"DELETE FROM Takes WHERE session_id = {sessionId} AND member_id = {id}")
+        print("You have successfully removed the session from your registrations\n")
+
 
 #TRAINER FUNCTIONS
 def viewTrainerSchedule(trainer_id):
@@ -631,6 +655,9 @@ def main():
                 elif selection == "schedule2":
                     #schedule group fitness class
                     registerForClass()
+                elif selection == "schedule3":
+                    #cancels class
+                    cancelClass()
 
             #CALLING TRAINER FUNCTIONS
             elif memType == 2:

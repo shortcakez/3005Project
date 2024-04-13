@@ -10,7 +10,7 @@ Prerequisites
              psycopg2
                 - pip install psycopg2 in your terminal
                 - pip install psycopg2-binary (if above option does not work)
-    Downlaod: application.py from the GitHub
+    Download: application.py from the GitHub
               DDL.sql from the SQL folder on the GitHub
               DML.sql from the SQL folder on the Github
 
