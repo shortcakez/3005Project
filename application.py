@@ -474,11 +474,27 @@ def isTrainerAvailable(date, time) -> int:
     return -1
 
 def manageTrainerSchedule():
-    day = input("Enter what day of the week you're working (Mon, Tue, Wed, Thu, Fri, Sat, Sun): ")
-    startTime = input("Enter the time you're starting (XX:00): ")
-    endTime = input("Enter the time you're finishing (XX:00): ")
-    cursor.execute("INSERT INTO Shift (trainer_id, day_of_week, start_time, end_time) VALUES (%s, %s, %s, %s)", (id, day, startTime, endTime))
-    print(f"You will be working on {day} from {startTime} to {endTime}")
+    print("\t1. Add shift")
+    print("\t2. Delete shift")
+    option = validate(1, 2)
+    if option == '1':
+        day = input("Enter what day of the week you're working (Mon, Tue, Wed, Thu, Fri, Sat, Sun): ")
+        startTime = input("Enter the time you're starting (XX:00): ")
+        endTime = input("Enter the time you're finishing (XX:00): ")
+        cursor.execute("INSERT INTO Shift (trainer_id, day_of_week, start_time, end_time) VALUES (%s, %s, %s, %s)", (id, day, startTime, endTime))
+        print(f"You will be working on {day} from {startTime} to {endTime}")
+    elif option == '2':
+        cursor.execute(f"SELECT shift_id, day_of_week, start_time, end_time FROM Shift WHERE trainer_id = {id}")
+        result = cursor.fetchall()
+
+        print("Shift Id\tDay\tStart Time\tEnd Time")
+        for r in result:
+            print("{}      \t\t{} \t{} \t{}".format(r[0], r[1], r[2], r[3]))
+        
+        shiftId = input("Enter the Id of the shift you want to delete: ")
+        cursor.execute(f"DELETE FROM Shift WHERE shift_id = {shiftId}")
+        print(f"Shift {shiftId} has successfully been deleted")
+        
 
 def displayProfile():
 
