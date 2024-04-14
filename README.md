@@ -22,4 +22,4 @@ PostgreSQL Set Up
 Compliation
     Run the Python program using your IDE
 
-Video Demo: 
+Video Demo: https://youtu.be/_dLKm3Qzztk 
